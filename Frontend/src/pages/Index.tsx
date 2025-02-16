@@ -9,7 +9,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import io from "socket.io-client";
 import { toast } from "sonner";
 
-const socket = io('wss://stream.binance.com:9443/ws');
+const socket = io('http://localhost:8081' , {
+  withCredentials: true,
+  transports:['websocket' , 'polling']
+});
 
 const TRADING_PAIRS = [
   { symbol: 'btcusdt', name: 'BTC/USDT' },
@@ -19,7 +22,7 @@ const TRADING_PAIRS = [
 ];
 
 const fetchCryptoData = async () => {
-  const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,ripple&vs_currencies=usd&include_24hr_change=true');
+  const response = await fetch('https://api.http://localhost:3001/api/binance/spot?symbol=BTCUSDT&interval=1h&limit=100'); //.com/api/v3/simple/price?ids=bitcoin,ethereum,ripple&vs_currencies=usd&include_24hr_change=true');
   return response.json();
 };
 
