@@ -1,65 +1,86 @@
 const WebSocket = require('ws');
-const http = require('http');
-const { Server } = require('socket.io');
+const ReconnectingWebSocket = require('reconnecting-websocket');
 
-// Create HTTP server
-const httpServer = http.createServer();
-const io = new Server(httpServer, {
-  cors: {
-    origin: "http://localhost:8080", // Allow your frontend origin
-    methods: ["GET", "POST"],
-    credentials: true
-  }
-});
+// Binance Spot
+const binanceWS = new ReconnectingWebSocket(
+  'wss://stream.binance.com:9443/ws/btcusdt@trade',
+  [],
+  { WebSocket }
+);
 
-// Connect to Binance WebSocket
-const binanceWS = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@trade');
+// ByBit Spot
+const bybitWS = new ReconnectingWebSocket(
+  'wss://stream.bybit.com/v5/public/spot',
+  [],
+  { WebSocket }
+);
 
-// Handle socket.io connections
-io.on('connection', (socket) => {
-  console.log('Client connected');
+const wss = new WebSocket.Server({ port: 8080 });
 
-  socket.on('subscribe', (data) => {
-    // Handle subscription
-    console.log('Subscribe:', data);
-  });
+// Handle exchange connections
+const exchanges = {
+  binance: handleBinance,
+  bybit: handleBybit,
+  mexc: handleMexc,
+  kucoin: handleKucoin
+};
 
-  socket.on('unsubscribe', (data) => {
-    // Handle unsubscription
-    console.log('Unsubscribe:', data);
-  });
-
-  socket.on('disconnect', () => {
-    console.log('Client disconnected');
-  });
-});
-
-// Process Binance messages
-binanceWS.on('message', (data) => {
-  try {
-    const trade = JSON.parse(data);
-    const formatted = {
+function handleBinance(ws) {
+  binanceWS.onmessage = (event) => {
+    const trade = JSON.parse(event.data);
+    ws.send(JSON.stringify({
       exchange: 'binance',
       price: parseFloat(trade.p),
       quantity: parseFloat(trade.q),
-      timestamp: new Date(trade.T)
-    };
+      timestamp: trade.T
+    }));
+  };
+}
 
-    // Broadcast to all connected clients
-    io.emit('message', formatted);
-  } catch (error) {
-    console.error('Error processing trade:', error);
-  }
+function handleBybit(ws) {
+  bybitWS.onmessage = (event) => {
+    const trade = JSON.parse(event.data);
+    ws.send(JSON.stringify({
+      exchange: 'bybit',
+      price: parseFloat(trade.data.price),
+      quantity: parseFloat(trade.data.size),
+      timestamp: trade.data.timestamp
+    }));
+  };
+}
+
+function handleMexc(ws) {
+  mexcWS.onmessage = (event) => {
+    const trade = JSON.parse(event.data);
+    ws.send(JSON.stringify({
+      exchange: 'mexc',
+      price: parseFloat(trade.price),
+      quantity: parseFloat(trade.quantity),
+      timestamp: trade.time
+    }));
+  };
+}
+
+function handleKucoin(ws) {
+  kucoinWS.onmessage = (event) => {
+    const trade = JSON.parse(event.data);
+    ws.send(JSON.stringify({
+      exchange: 'kucoin',
+      price: parseFloat(trade.data.price),
+      quantity: parseFloat(trade.data.size),
+      timestamp: trade.data.timestamp
+    }));
+  };
+}
+
+
+
+wss.on('connection', (ws) => {
+  ws.on('message', (message) => {
+    const { exchange } = JSON.parse(message);
+    exchanges[exchange](ws);
+  });
 });
 
-// Start server
-const PORT = process.env.PORT || 8081;
-httpServer.listen(PORT, () => {
-  console.log(`Socket.IO server running on http://localhost:${PORT}`);
-});
 
-// Handle process termination
-process.on('SIGINT', () => {
-  httpServer.close();
-  process.exit();
-});
+console.log('WebSocket server running on ws://localhost:8080');

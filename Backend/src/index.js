@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const spotsRouter = require('./routes/spots');
+const futuresRouter = require('./routes/futures');
 
 const app = express();
 const PORT = 3001;
@@ -11,6 +12,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api', spotsRouter);
+app.use('/api', futuresRouter);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

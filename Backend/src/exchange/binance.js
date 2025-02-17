@@ -1,26 +1,37 @@
 const axios = require('axios');
-// const { response } = require('express');
 
+const BASE_URLS = {
+  spot: 'https://api.binance.com/api/v3',
+  futures: 'https://fapi.binance.com/fapi/v1'
+};
 
-const fetchSpotOHLCV = async (symbol , interval , limit) => {
-    try {
-        const response = await axios.get('https://api.binance.com/api/v3/klines', {
-          params: { symbol: symbol.toUpperCase(), interval, limit: limit || 100 }
-        });
-        
-        const data = response.data.map(k => ({
-          time: k[0],
-          open: k[1],
-          high: k[2],
-          low: k[3],
-          close: k[4],
-          volume: k[5]
-        }));
-        
-
-      } catch (error) {
-        throw new Error(error.message); 
+async function fetchOHLCV(type = 'spot', params) {
+  try {
+    const response = await axios.get(`${BASE_URLS[type]}/klines`, {
+      params: {
+        symbol: params.symbol.toUpperCase(),
+        interval: params.interval,
+        limit: params.limit || 500,
+        startTime: params.startTime,
+        endTime: params.endTime
       }
-    };
+    });
+    
+    return response.data.map(k => ({
+      time: k[0],
+      open: parseFloat(k[1]),
+      high: parseFloat(k[2]),
+      low: parseFloat(k[3]),
+      close: parseFloat(k[4]),
+      volume: parseFloat(k[5])
+    }));
+    
+  } catch (error) {
+    throw new Error(`Binance API Error: ${error.response?.data?.msg || error.message}`);
+  }
+}
 
-module.exports = { fetchSpotOHLCV };
+module.exports = {
+  fetchBinanceSpot: (params) => fetchOHLCV('spot', params),
+  fetchBinanceFutures: (params) => fetchOHLCV('futures', params)
+};
