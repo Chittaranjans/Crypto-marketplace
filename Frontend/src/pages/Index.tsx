@@ -41,7 +41,7 @@ export default function Dashboard() {
         `http://localhost:3001/api/${exchange}/${market}?symbol=BTCUSDT&interval=1h&limit=100`
       );
       const data = await res.json();
-      console.log(data)
+      // console.log(data)
       setOhlcv(data);
     };
     fetchData();
@@ -51,8 +51,8 @@ export default function Dashboard() {
   useEffect(() => {
     if (lastMessage?.data) {
       const trade = JSON.parse(lastMessage.data) as TradeData;
-      console.log(trade)
-      setTrades((prev) => [trade, ...prev.slice(0, 10)]); // Keep last 10 trades
+      // console.log(trade)
+      setTrades((prev) => [trade, ...prev.slice(0, 15)]); // Keep last 10 trades
     }
   }, [lastMessage]);
 

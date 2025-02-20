@@ -73,14 +73,23 @@ function handleKucoin(ws) {
   };
 }
 
-
-
 wss.on('connection', (ws) => {
   ws.on('message', (message) => {
     const { exchange } = JSON.parse(message);
-    exchanges[exchange](ws);
+    if (exchanges[exchange]) {
+      exchanges[exchange](ws);
+    } else {
+      ws.send(JSON.stringify({ error: 'Unknown exchange' }));
+    }
+  });
+
+  ws.on('error', (error) => {
+    console.error('WebSocket error:', error);
+  });
+
+  ws.on('close', () => {
+    console.log('Client disconnected');
   });
 });
-
 
 console.log('WebSocket server running on ws://localhost:8080');
