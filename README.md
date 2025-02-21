@@ -37,15 +37,13 @@ Make sure you have the following installed on your machine:
 2. Install dependencies for both the frontend and backend:
 
     ```bash
-# Install backend dependencies
-cd Backend
-npm install
+    cd Backend
+    npm install
+ Install frontend dependencies
+    cd ../Frontend
+    npm install
 
-# Install frontend dependencies
-cd ../Frontend
-npm install
-
-3. Running the Server
+3. Running the Backend Server
 
    ```bash
    cd Backend
@@ -53,27 +51,33 @@ npm install
 
 The backend server will run on http://localhost:3001.
 
-   cd ../socket
-   node spot.js
+4. Running WebSocket Server 
+
+    ```bash
+  cd ../socket
+  node spot.js
 
 The WebSocket server will run on ws://localhost:8080.
 
-  cd ../Frontend
-  npm start
+5. Running Frontend Application
+
+   ```bash
+   cd ../Frontend
+   npm start
 
 
 
-4. Usage
+6. Usage
 Open your browser and navigate to your Frontend server (http://localhost:(PORT))
 Select the desired exchange, market, and symbol from the dropdown menus.
 View real-time data, historical data, and live trade updates.
 
-5. Project Structure
+7. Project Structure
 Backend: Contains the backend server code for fetching data from exchanges.
 Frontend: Contains the React frontend code for the user interface.
 Socket: Contains the WebSocket server code for real-time data updates.
 
-6. Contributing
+8. Contributing
 ## We welcome contributions from the community. To contribute, please follow these steps:
 
  Fork the repository.
