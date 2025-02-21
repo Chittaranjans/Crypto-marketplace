@@ -2,6 +2,7 @@
 
 Crypto Marketplace is a comprehensive platform for visualizing and trading cryptocurrency data. It provides real-time data visualization, historical data analysis, and live trade updates from multiple cryptocurrency exchanges. The platform is built using modern web technologies and offers a user-friendly interface for both novice and experienced traders.
 
+![Screenshot 2025-02-21 130153](https://github.com/user-attachments/assets/8590c687-278f-410e-8111-ef036b2a6f54)
 
 
 ## Features
