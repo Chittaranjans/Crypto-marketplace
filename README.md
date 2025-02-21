@@ -2,6 +2,8 @@
 
 Crypto Marketplace is a comprehensive platform for visualizing and trading cryptocurrency data. It provides real-time data visualization, historical data analysis, and live trade updates from multiple cryptocurrency exchanges. The platform is built using modern web technologies and offers a user-friendly interface for both novice and experienced traders.
 
+
+
 ## Features
 
 - **Real-time Data Visualization**: View real-time cryptocurrency data with interactive charts.
@@ -39,7 +41,7 @@ Make sure you have the following installed on your machine:
     ```bash
     cd Backend
     npm install
- Install frontend dependencies
+    Install frontend dependencies
     cd ../Frontend
     npm install
 
@@ -54,8 +56,8 @@ The backend server will run on http://localhost:3001.
 4. Running WebSocket Server 
 
     ```bash
-  cd ../socket
-  node spot.js
+    cd ../socket
+    node spot.js
 
 The WebSocket server will run on ws://localhost:8080.
 
@@ -78,10 +80,10 @@ Frontend: Contains the React frontend code for the user interface.
 Socket: Contains the WebSocket server code for real-time data updates.
 
 8. Contributing
-## We welcome contributions from the community. To contribute, please follow these steps:
+#### We welcome contributions from the community. To contribute, please follow these steps:
 
- Fork the repository.
- Create a new branch (git checkout -b feature-branch).
- Make your changes and commit them (git commit -m 'Add new feature').
- Push to the branch (git push origin feature-branch).
- Create a pull request.
+ 1. Fork the repository.
+ 2. Create a new branch (git checkout -b feature-branch).
+ 3. Make your changes and commit them (git commit -m 'Add new feature').
+ 4. Push to the branch (git push origin feature-branch).
+ 5. Create a pull request.
