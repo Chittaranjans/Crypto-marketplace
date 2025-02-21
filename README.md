@@ -64,21 +64,20 @@ The WebSocket server will run on ws://localhost:8080.
 
 
 4. Usage
-# Open your browser and navigate to your Frontend server (http://localhost:(PORT))
-# Select the desired exchange, market, and symbol from the dropdown menus.
-# View real-time data, historical data, and live trade updates.
+Open your browser and navigate to your Frontend server (http://localhost:(PORT))
+Select the desired exchange, market, and symbol from the dropdown menus.
+View real-time data, historical data, and live trade updates.
 
 5. Project Structure
-# Backend: Contains the backend server code for fetching data from exchanges.
-# Frontend: Contains the React frontend code for the user interface.
-# socket: Contains the WebSocket server code for real-time data updates.
+Backend: Contains the backend server code for fetching data from exchanges.
+Frontend: Contains the React frontend code for the user interface.
+Socket: Contains the WebSocket server code for real-time data updates.
 
 6. Contributing
-   ```bash
 ## We welcome contributions from the community. To contribute, please follow these steps:
 
-# Fork the repository.
-# Create a new branch (git checkout -b feature-branch).
-# Make your changes and commit them (git commit -m 'Add new feature').
-# Push to the branch (git push origin feature-branch).
-# Create a pull request.
+ Fork the repository.
+ Create a new branch (git checkout -b feature-branch).
+ Make your changes and commit them (git commit -m 'Add new feature').
+ Push to the branch (git push origin feature-branch).
+ Create a pull request.
