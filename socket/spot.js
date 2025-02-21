@@ -1,20 +1,6 @@
 const WebSocket = require('ws');
 const ReconnectingWebSocket = require('reconnecting-websocket');
 
-// Binance Spot
-const binanceWS = new ReconnectingWebSocket(
-  'wss://stream.binance.com:9443/ws/btcusdt@trade',
-  [],
-  { WebSocket }
-);
-
-// ByBit Spot
-const bybitWS = new ReconnectingWebSocket(
-  'wss://stream.bybit.com/v5/public/spot',
-  [],
-  { WebSocket }
-);
-
 const wss = new WebSocket.Server({ port: 8080 });
 
 // Handle exchange connections
@@ -25,7 +11,12 @@ const exchanges = {
   kucoin: handleKucoin
 };
 
-function handleBinance(ws) {
+function createReconnectingWebSocket(url) {
+  return new ReconnectingWebSocket(url, [], { WebSocket });
+}
+
+function handleBinance(ws, symbol) {
+  const binanceWS = createReconnectingWebSocket(`wss://stream.binance.com:9443/ws/${symbol}@trade`);
   binanceWS.onmessage = (event) => {
     const trade = JSON.parse(event.data);
     ws.send(JSON.stringify({
@@ -35,9 +26,18 @@ function handleBinance(ws) {
       timestamp: trade.T
     }));
   };
+
+  binanceWS.onerror = (error) => {
+    console.error('Binance WebSocket error:', error);
+  };
+
+  binanceWS.onclose = () => {
+    console.log('Binance WebSocket closed');
+  };
 }
 
-function handleBybit(ws) {
+function handleBybit(ws, symbol) {
+  const bybitWS = createReconnectingWebSocket(`wss://stream.bybit.com/v5/public/spot/${symbol}@trade`);
   bybitWS.onmessage = (event) => {
     const trade = JSON.parse(event.data);
     ws.send(JSON.stringify({
@@ -47,9 +47,18 @@ function handleBybit(ws) {
       timestamp: trade.data.timestamp
     }));
   };
+
+  bybitWS.onerror = (error) => {
+    console.error('Bybit WebSocket error:', error);
+  };
+
+  bybitWS.onclose = () => {
+    console.log('Bybit WebSocket closed');
+  };
 }
 
-function handleMexc(ws) {
+function handleMexc(ws, symbol) {
+  const mexcWS = createReconnectingWebSocket(`wss://stream.mexc.com/ws/${symbol}@trade`);
   mexcWS.onmessage = (event) => {
     const trade = JSON.parse(event.data);
     ws.send(JSON.stringify({
@@ -59,9 +68,18 @@ function handleMexc(ws) {
       timestamp: trade.time
     }));
   };
+
+  mexcWS.onerror = (error) => {
+    console.error('Mexc WebSocket error:', error);
+  };
+
+  mexcWS.onclose = () => {
+    console.log('Mexc WebSocket closed');
+  };
 }
 
-function handleKucoin(ws) {
+function handleKucoin(ws, symbol) {
+  const kucoinWS = createReconnectingWebSocket(`wss://stream.kucoin.com/ws/${symbol}@trade`);
   kucoinWS.onmessage = (event) => {
     const trade = JSON.parse(event.data);
     ws.send(JSON.stringify({
@@ -71,13 +89,21 @@ function handleKucoin(ws) {
       timestamp: trade.data.timestamp
     }));
   };
+
+  kucoinWS.onerror = (error) => {
+    console.error('Kucoin WebSocket error:', error);
+  };
+
+  kucoinWS.onclose = () => {
+    console.log('Kucoin WebSocket closed');
+  };
 }
 
 wss.on('connection', (ws) => {
   ws.on('message', (message) => {
-    const { exchange } = JSON.parse(message);
+    const { exchange, symbol } = JSON.parse(message);
     if (exchanges[exchange]) {
-      exchanges[exchange](ws);
+      exchanges[exchange](ws, symbol);
     } else {
       ws.send(JSON.stringify({ error: 'Unknown exchange' }));
     }

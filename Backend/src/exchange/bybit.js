@@ -27,7 +27,7 @@ async function fetchOHLCV(type = 'spot', params) {
     }));
     
   } catch (error) {
-    throw new Error(`Binance API Error: ${error.response?.data?.msg || error.message}`);
+    throw new Error(`Bybit API Error: ${error.response?.data?.msg || error.message}`);
   }
 }
 

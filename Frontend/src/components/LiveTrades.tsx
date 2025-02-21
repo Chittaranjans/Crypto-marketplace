@@ -15,7 +15,6 @@ interface TradeData {
 }
 
 export default function LiveTrades({ trades }: LiveTradesProps) {
-  const [showSidebar, setShowSidebar] = useState(false);
   const [latestTrade, setLatestTrade] = useState<TradeData | null>(null);
   const [previousPrice, setPreviousPrice] = useState<number | null>(null);
 
@@ -27,56 +26,43 @@ export default function LiveTrades({ trades }: LiveTradesProps) {
     }
   }, [trades]);
 
-  const getPriceColor = () => {
-    if (latestTrade && previousPrice !== null) {
-      return latestTrade.price > previousPrice ? 'text-green-500' : 'text-red-500';
+  const getPriceColor = (currentPrice: number) => {
+    if (previousPrice !== null) {
+      return currentPrice > previousPrice ? 'text-green-400' : 'text-red-400';
     }
-    return 'text-black';
+    return 'text-gray-300';
   };
 
   return (
-    <div className="flex ">
-      {/* Main Content */}
-      <div className="flex-1 bg-gray-100 p-4">
-        <div className="mt-4">
-          {latestTrade && (
-            <h2 className="text-lg">
-              BTC/USD Price:
-              <span className={`text-xl ${getPriceColor()}`}>
-                 ${latestTrade.price.toFixed(2)}
-              </span>
-            </h2>
-          )}
-        </div>
+    <div className="flex-1 overflow-y-auto bg-gray-800">
+      <div className="grid grid-cols-3 px-4 py-2 text-sm font-medium bg-gray-850 border-b border-gray-700">
+        <span>Price</span>
+        <span className="text-right">Amount</span>
+        <span className="text-right">Time</span>
       </div>
-
-      {/* Sidebar Toggle Button */}
-      {!showSidebar && (
-        <button
-          className="fixed right-0 top-0 m-4 p-2 bg-blue-500 text-white rounded"
-          onClick={() => setShowSidebar(true)}
-        >
-          Show Trades
-        </button>
-      )}
-
-      {/* Live Trades Sidebar */}
-      {showSidebar && (
-        <div className="w-64 bg-white p-4 rounded shadow fixed right-0 top-0 h-full overflow-y-auto">
-          <h2 className="text-xl mb-4">Live Trades</h2>
-          <div className="space-y-2">
-            {trades.map((trade, i) => (
-              <div key={i} className="border-b pb-2">
-                <p className="font-semibold">Price: ${trade.price.toFixed(2)}</p>
-                <p>Quantity: {trade.quantity.toFixed(4)}</p>
-                <p className="text-sm text-gray-500">
-                  {new Date(trade.timestamp).toLocaleTimeString()}
-                </p>
-              </div>
-            ))}
+      
+      <div className="divide-y divide-gray-700">
+        {trades.map((trade, i) => (
+          <div 
+            key={i}
+            className="grid grid-cols-3 items-center px-4 py-2 hover:bg-gray-750 transition-colors text-sm"
+          >
+            <span className={getPriceColor(trade.price)}>
+              ${trade.price.toFixed(2)}
+            </span>
+            <span className="text-right text-gray-300">
+              {trade.quantity.toFixed(4)}
+            </span>
+            <span className="text-right text-gray-400">
+              {new Date(trade.timestamp).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+              })}
+            </span>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
     </div>
   );
 }
